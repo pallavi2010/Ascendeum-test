@@ -1,0 +1,173 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <h1>Snake and ladder </h1>
+        <div style="display:flex;">
+            <div>
+                <label>User Input</label>
+                <table>
+                    <tr><td>Grid</td><td>  <input name="grid" calss="grid" id="grid" type="number" min=3 /></td></tr>
+                </table>
+            </div>
+        
+            <table>
+                <tr><td>Players</td><td> 3</td></tr>
+            </table>
+        </div>
+        <div>
+            <button id="start_button" onClick="checkGrid()" style="display:block;">Start</button>
+            <div id="player_buttons" style="display:none;">
+                <button onClick="rollDice(1)">P1</button>
+                <button onClick="rollDice(2)">P2</button>
+                <button onClick="rollDice(3)">P3</button>
+            </div>
+        </div>
+        <div id="player_record" style="display:none;">
+           
+            <table style="border:1px solid black;">
+                <tr>
+                    <th>Player No.</th>
+                    <th>Dice Roll History</th>
+                    <th>Position History</th>
+                    <th>Coordinate History</th>
+                    <th>Winner Status</th>
+                </tr>
+                <tr>
+                    <td id="player1">1</td>
+                    <td id="player1_history" ></td>
+                    <td id="player1_position"></td>
+                    <td id="player1_coords"></td>
+                    <td id="player1_winner"></td>
+                </tr>
+                <tr>
+                    <td id="player2">2</td>
+                    <td id="player2_history" class="player2_history"></td>
+                    <td id="player2_position"></td>
+                    <td id="player2_coords"></td>
+                    <td id="player3_winner"></td>
+                </tr>
+                <tr>
+                    <td id="player3">3</td>
+                    <td id="player3_history" ></td>
+                    <td id="player3_position"></td>
+                    <td id="player3_coords"></td>
+                    <td id="player3_winner"></td>
+                </tr>
+            </table>
+            <span id="player1_lastpos" style="display: none;"></span>
+            <span  id="player2_lastpos"  style="display: none;"></span>
+            <span  id="player3_lastpos"  style="display: none;"></span>
+        </div>
+
+        <script>
+
+           
+           totalElements=0;
+          
+
+            function checkGrid(){
+                let grid = document.getElementById('grid');
+                console.log(grid.value);
+                const player_buttons = document.getElementById('player_buttons');
+                const player_record = document.getElementById('player_record');
+                const start_button = document.getElementById('start_button');
+
+                
+                if(grid.value >= 2){
+                    player_buttons.style.display='block';
+                    start_button.style.display='none';
+                    player_record.style.display='block';
+                    let gridValues=[];
+                     totalElements = grid.value*grid.value;
+                    console.log(totalElements);
+                    let i=1;
+                  
+                    while(i<=totalElements){
+                        gridValues.push(i);
+                       
+                       
+                        i++;
+                      
+                    }
+
+
+                    console.log(gridValues);
+                    coordArray=[];
+                        let y=0;
+                        let z= 1;
+                        let rev=1;
+                            while(y < grid.value){
+                                rev=!rev;
+                                let x=0;
+                                console.log(rev);
+                                if(rev== true){
+                                    let v = z+ parseInt(grid.value)-1;
+                                    while(x < grid.value){
+                                    coordArray[v]=[];
+                                    coordArray[v].push(x,y);
+                                    x++;
+                                    v--;
+                                    z++;
+                                }
+                                }else{
+                                    while(x < grid.value){
+                                    coordArray[z]=[];
+                                    coordArray[z].push(x,y);
+                                    x++;
+                                    z++;
+                                }
+                                }
+                               
+                            y++
+                        }
+                        console.log(coordArray);
+                }
+
+              
+            }
+
+            function rollDice(player){
+                const player_buttons = document.getElementById('player_buttons');
+                console.log(player);
+                let diceValue=Math.floor(Math.random() * 6 ) +1;
+                let player_history = document.getElementById('player'+player+'_history');
+                let player_position = document.getElementById('player'+player+'_position');
+
+                if(player_history.innerText ==''){
+                    player_history.innerText =  diceValue;
+                }else{
+                    player_history.innerText =  player_history.innerText+','+diceValue;
+                }
+                let player_lastposition = document.getElementById('player'+player+'_lastpos');
+                if(player_position.innerText ==''){
+                    player_lastposition.innerText=  diceValue;
+                    player_position.innerText =  diceValue;
+                }else{
+
+                    let nextPos= parseInt(player_lastposition.innerText)+ parseInt(diceValue);
+                    if(nextPos < totalElements){
+                        player_lastposition.innerText=  nextPos;
+                        player_position.innerText =  player_position.innerText+','+nextPos;
+                    } else if(parseInt(nextPos) == parseInt(totalElements)){
+                        let player_winner = document.getElementById('player'+player+'_winner');
+                        player_lastposition.innerText=  nextPos;
+                        player_position.innerText =  player_position.innerText+','+nextPos;
+                        player_winner.innerText ='Winner';
+                        player_buttons.style.display='none';
+                        alert('Player '+player+' Won');
+                    }else if(nextPos > totalElements){
+                        player_position.innerText =  player_position.innerText+','+player_lastposition.innerText;
+                        alert('invalid dice roll');
+                    }
+                   
+                }
+                
+              
+            
+            }
+
+        </script>
+    </body>
+</html>
